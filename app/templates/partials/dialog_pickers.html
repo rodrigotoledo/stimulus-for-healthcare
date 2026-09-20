@@ -1,0 +1,47 @@
+{% if error %}
+  <div class="rounded-lg border border-rose-500/40 bg-rose-500/10 text-rose-300 text-xs px-3 py-2 my-3">
+    {{ error }}
+  </div>
+{% endif %}
+
+<div class="grid grid-cols-2 gap-3 mt-4">
+  <div>
+    <label class="block text-[10px] uppercase tracking-wider text-base-content/50 mb-1" for="config-select">
+      Configuração
+    </label>
+    <select
+      id="config-select"
+      class="select select-sm w-full bg-base-100 border-base-300 text-base-content focus:border-indigo-500 focus:outline-none"
+      data-dialog-explorer-target="config"
+      data-action="change->dialog-explorer#reload"
+    >
+      {% for name in configs %}
+        <option value="{{ name }}" {% if name == config %}selected{% endif %}>{{ name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div>
+    <label class="block text-[10px] uppercase tracking-wider text-base-content/50 mb-1" for="split-select">
+      Divisão
+    </label>
+    <select
+      id="split-select"
+      class="select select-sm w-full bg-base-100 border-base-300 text-base-content focus:border-indigo-500 focus:outline-none"
+      data-dialog-explorer-target="split"
+      data-action="change->dialog-explorer#reload"
+    >
+      {% for entry in splits %}
+        <option value="{{ entry.split }}" {% if entry.split == split %}selected{% endif %}>
+          {{ entry.split }}{% if entry.num_rows is not none %} · {{ "{:,}".format(entry.num_rows) }}{% endif %}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
+{% for warning in warnings %}
+  <div class="rounded-lg border border-amber-500/40 bg-amber-500/10 text-amber-300 text-[11px] px-3 py-2 mt-3">
+    {{ warning }}
+  </div>
+{% endfor %}

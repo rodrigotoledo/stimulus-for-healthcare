@@ -1,0 +1,62 @@
+{# Column 1 — dataset picker. The `dataset-browser` controller swaps the
+   list and the results area, and fires `dataset:selected` on the body. #}
+<section
+  class="bg-base-200 border-b lg:border-b-0 lg:border-r border-base-300 p-5"
+  data-controller="dataset-browser"
+  data-action="dataset:selected@window->dataset-browser#highlight"
+>
+  <h2 class="text-[11px] font-semibold uppercase tracking-[0.14em] text-base-content/50 mb-4">
+    1 · Conjunto de dados
+  </h2>
+
+  <div class="grid grid-cols-2 gap-1 p-1 rounded-lg bg-base-100/70 mb-4" role="tablist">
+    <button
+      type="button"
+      class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors bg-base-300 text-white shadow-sm"
+      role="tab"
+      data-dataset-browser-target="tab"
+      data-tab="curated"
+      data-action="dataset-browser#switchTab"
+    >
+      Curados
+    </button>
+    <button
+      type="button"
+      class="px-3 py-1.5 rounded-md text-xs font-medium transition-colors text-base-content/70 hover:text-base-content"
+      role="tab"
+      data-dataset-browser-target="tab"
+      data-tab="search"
+      data-action="dataset-browser#switchTab"
+    >
+      Buscar no HF Hub
+    </button>
+  </div>
+
+  <form
+    class="hidden mb-4"
+    data-dataset-browser-target="searchForm"
+    data-action="submit->dataset-browser#search"
+  >
+    <div class="flex gap-2">
+      <input
+        type="search"
+        name="q"
+        placeholder="ex.: diálogo médico"
+        class="input input-sm flex-1 bg-base-100 border-base-300 text-base-content placeholder:text-base-content/40 focus:border-indigo-500 focus:outline-none"
+        data-dataset-browser-target="query"
+      >
+      <button type="submit" class="btn btn-sm btn-primary">Buscar</button>
+    </div>
+  </form>
+
+  <div data-dataset-browser-target="error"></div>
+
+  <div
+    class="space-y-2"
+    data-dataset-browser-target="list"
+    data-curated-url="{{ url_for('datasets_curated_fragment') }}"
+    data-search-url="{{ url_for('datasets_search_fragment') }}"
+  >
+    {% include "partials/dataset_list.html" %}
+  </div>
+</section>

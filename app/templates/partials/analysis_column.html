@@ -1,0 +1,114 @@
+{# Column 3 — analysis. The `analysis-stream` controller POSTs the transcript
+   and appends HTML fragments that the server emits over SSE. #}
+<section
+  class="bg-base-200 p-5"
+  data-controller="analysis-stream"
+  data-action="dialog:selected@window->analysis-stream#setDialog"
+>
+  <h2 class="text-[11px] font-semibold uppercase tracking-[0.14em] text-base-content/50 mb-4">
+    3 · Análise
+  </h2>
+
+  <label class="block text-[10px] uppercase tracking-wider text-base-content/50 mb-1" for="language-select">
+    Idioma da análise
+  </label>
+  <select
+    id="language-select"
+    class="select select-sm w-full bg-base-100 border-base-300 text-base-content focus:border-primary focus:outline-none mb-3"
+    data-analysis-stream-target="language"
+  >
+    {% for language in languages %}
+      <option value="{{ language.id }}" {% if language.id == default_language %}selected{% endif %}>
+        {{ language.label }}
+      </option>
+    {% endfor %}
+  </select>
+
+  <label class="block text-[10px] uppercase tracking-wider text-base-content/50 mb-1" for="model-select">
+    Modelo Ollama
+  </label>
+  <select
+    id="model-select"
+    class="select select-sm w-full bg-base-100 border-base-300 text-base-content focus:border-indigo-500 focus:outline-none mb-3"
+    data-analysis-stream-target="model"
+  >
+    {% for model in models %}
+      <option value="{{ model.name }}" {% if model.name == default_model %}selected{% endif %}>
+        {{ model.name }}{% if model.parameter_size %} · {{ model.parameter_size }}{% endif %}
+      </option>
+    {% else %}
+      <option value="">nenhum modelo encontrado</option>
+    {% endfor %}
+  </select>
+
+  <label class="block text-[10px] uppercase tracking-wider text-base-content/50 mb-1" for="lens-select">
+    Lente de análise
+  </label>
+  <select
+    id="lens-select"
+    class="select select-sm w-full bg-base-100 border-base-300 text-base-content focus:border-indigo-500 focus:outline-none"
+    data-analysis-stream-target="lens"
+    data-action="change->analysis-stream#describeLens"
+  >
+    {% for lens in lenses %}
+      <option value="{{ lens.id }}" {% if lens.id == default_lens %}selected{% endif %}>
+        {{ lens.title }}
+      </option>
+    {% endfor %}
+  </select>
+  <p class="text-[11px] text-base-content/50 mt-1.5 leading-snug" data-analysis-stream-target="lensHint">
+    {{ lenses | selectattr('id', 'equalto', default_lens) | map(attribute='description') | first }}
+  </p>
+
+  <label class="block text-[10px] uppercase tracking-wider text-base-content/50 mt-4 mb-1" for="temperature-input">
+    Temperatura · <span class="font-mono text-indigo-300" data-analysis-stream-target="temperatureLabel">0.2</span>
+  </label>
+  <input
+    id="temperature-input"
+    type="number"
+    min="0"
+    max="2"
+    step="0.1"
+    value="0.2"
+    class="input input-sm w-full bg-base-100 border-base-300 text-base-content focus:border-indigo-500 focus:outline-none"
+    data-analysis-stream-target="temperature"
+    data-action="input->analysis-stream#updateTemperature"
+  />
+
+  <div class="flex items-center gap-2 mt-5">
+    <button
+      class="btn btn-sm btn-primary shadow-lg shadow-indigo-950"
+      data-analysis-stream-target="runButton"
+      data-action="analysis-stream#run"
+      disabled
+    >
+      Analisar diálogo
+    </button>
+    <button
+      class="btn btn-sm btn-ghost text-base-content/70 hidden"
+      data-analysis-stream-target="stopButton"
+      data-action="analysis-stream#stop"
+    >
+      Parar
+    </button>
+  </div>
+
+  <div data-analysis-stream-target="meta" class="text-[11px] text-base-content/50 mt-3 font-mono"></div>
+  <div data-analysis-stream-target="error"></div>
+
+  <div
+    class="hidden mt-3 rounded-lg border border-base-300 bg-base-100 p-4 text-sm min-h-[90px]"
+    data-analysis-stream-target="output"
+  ></div>
+
+  <p class="text-xs text-base-content/50 leading-relaxed mt-5" data-analysis-stream-target="hint">
+    Selecione um diálogo na coluna do meio e execute uma análise. A transcrição é
+    enviada para a sua instância local do Ollama — nada sai desta máquina.
+  </p>
+
+  <div
+    data-analysis-stream-target="config"
+    data-analyze-url="{{ url_for('analyze_events') }}"
+    data-lenses='{{ lenses | tojson }}'
+  ></div>
+</section>

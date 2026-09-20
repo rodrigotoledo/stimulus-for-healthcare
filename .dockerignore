@@ -1,0 +1,18 @@
+# Keep the build context small. node_modules is excluded because the css stage
+# installs its own deps from package-lock.json (`npm ci`).
+node_modules/
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.reasonix/
+.git/
+tests/
+static/vendor/
+Dockerfile
+docker-compose.yml
+README.md
+.env
+.env.*
+!.env.example

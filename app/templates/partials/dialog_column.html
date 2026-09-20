@@ -1,0 +1,24 @@
+{# Column 2 — dialogs. The `dialog-explorer` controller loads splits, pages
+   through rows and swaps the transcript, all via server-rendered fragments. #}
+<section
+  class="bg-base-200 border-b lg:border-b-0 lg:border-r border-base-300 p-5"
+  data-controller="dialog-explorer"
+  data-action="dataset:selected@window->dialog-explorer#loadDataset"
+>
+  <h2 class="text-[11px] font-semibold uppercase tracking-[0.14em] text-base-content/50 mb-4">
+    2 · Diálogos
+  </h2>
+
+  {# The pickers live outside `body` so a rows swap cannot wipe them. #}
+  <div data-dialog-explorer-target="splits">
+    <p class="text-xs text-base-content/50 leading-relaxed">
+      Escolha um conjunto de dados à esquerda para carregar os diálogos.
+    </p>
+  </div>
+
+  <div
+    data-dialog-explorer-target="body"
+    data-splits-url="{{ url_for('dataset_splits_fragment', dataset_id='__DATASET__') }}"
+    data-rows-url="{{ url_for('dataset_rows_fragment', dataset_id='__DATASET__') }}"
+  ></div>
+</section>

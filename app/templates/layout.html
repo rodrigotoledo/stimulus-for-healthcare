@@ -1,0 +1,54 @@
+{# Base layout. Stimulus + server-rendered fragments: navigation and updates
+   are driven by fetch() inside Stimulus controllers, which swap in HTML
+   rendered by Jinja on the server (the "fragments over SSE" approach).
+
+   Styling is compiled ahead of time (Tailwind + daisyUI) into
+   static/css/app.css — no CSS runtime in this page and no CDN. The single
+   daisyUI theme lives in :root, so no data-theme attribute is needed. #}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Seletor de Diálogos HuggingFace{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', path='css/app.css') }}">
+
+    <script type="importmap">
+      {{ importmap | safe }}
+    </script>
+    <script type="module" src="{{ url_for('static', path='js/app.js') }}"></script>
+  </head>
+  <body class="min-h-screen bg-base-100 text-base-content" data-controller="status">
+    <header
+      class="flex items-center gap-4 px-6 h-14 border-b border-base-300 bg-base-200/80 backdrop-blur sticky top-0 z-20"
+    >
+      <div class="flex items-baseline gap-3 min-w-0">
+        <h1 class="text-sm font-semibold tracking-tight text-white truncate">
+          Seletor de Diálogos HuggingFace
+        </h1>
+        <span class="hidden md:inline text-xs text-base-content/50">
+          explorar → selecionar → analisar localmente
+        </span>
+      </div>
+      <div class="ml-auto">{% include "partials/status.html" %}</div>
+    </header>
+
+    <main
+      class="grid grid-cols-1 lg:grid-cols-[minmax(280px,0.9fr)_minmax(340px,1.1fr)_minmax(380px,1.3fr)]"
+    >
+      {% include "partials/dataset_column.html" %}
+      {% include "partials/dialog_column.html" %}
+      {% include "partials/analysis_column.html" %}
+    </main>
+
+    <footer
+      class="text-center text-xs text-base-content/50 border-t border-base-300 px-6 py-3 leading-relaxed"
+    >
+      <strong class="text-base-content/70">Ferramenta de pesquisa.</strong> As
+      análises são geradas por um modelo de linguagem local e não constituem
+      orientação médica. Nunca as use para tomar decisões clínicas sobre uma
+      pessoa real.
+    </footer>
+  </body>
+</html>

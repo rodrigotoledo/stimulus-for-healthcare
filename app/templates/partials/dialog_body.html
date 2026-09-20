@@ -1,0 +1,81 @@
+{# The rows fragment: pager, dialog cards, and the selected transcript.
+   Rendered into `body` on every page or selection change. #}
+{% if page %}
+  {# The dialog payloads the analysis column needs, embedded once so the
+     controller does not have to keep its own copy of the page state. #}
+  <script type="application/json" data-dialogs-json>{{ dialogs_payload | safe }}</script>
+
+  <div class="flex items-center gap-2 mt-4 mb-2">
+    <button
+      class="btn btn-xs btn-ghost text-base-content/70 hover:text-white"
+      data-action="dialog-explorer#prev"
+      {% if offset == 0 %}disabled{% endif %}
+    >
+      ← Anterior
+    </button>
+    <span class="flex-1 text-center text-[11px] text-base-content/50 tabular-nums">
+      {{ page.offset }}–{{ page.offset + page.num_rows_page - 1 }}
+      {% if page.num_rows_total is not none %}
+        of {{ "{:,}".format(page.num_rows_total) }}
+      {% endif %}
+    </span>
+    <button
+      class="btn btn-xs btn-ghost text-base-content/70 hover:text-white"
+      data-action="dialog-explorer#next"
+      {% if not has_next %}disabled{% endif %}
+    >
+      Próximo →
+    </button>
+  </div>
+
+  <ul class="space-y-1.5">
+    {% for dialog in page.dialogs %}
+      <li>
+        <button
+          type="button"
+          class="w-full text-left rounded-lg border px-3 py-2 transition-colors {% if selected is not none and selected.index == dialog.index %}border-indigo-500 bg-indigo-500/10 ring-1 ring-indigo-500/40{% else %}border-base-300 bg-base-200 hover:border-base-content/40 hover:bg-base-300{% endif %}"
+          data-action="dialog-explorer#select"
+          data-dialog-index="{{ dialog.index }}"
+        >
+          <div class="flex items-center gap-2 text-[10px] uppercase tracking-wider text-base-content/50">
+            <span class="font-mono text-indigo-400">#{{ dialog.index }}</span>
+            <span>{{ dialog.num_turns }} turno{{ '' if dialog.num_turns == 1 else 's' }}</span>
+            <span class="text-base-content/30">·</span>
+            <span>{{ dialog.messages | length }} mensagens</span>
+          </div>
+          <div class="clamp-3 text-[13px] text-base-content/90 mt-1.5 leading-snug">
+            {{ dialog.messages | first_user_content }}
+          </div>
+        </button>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% if selected %}
+  <div class="flex items-center gap-2 mt-6 mb-3">
+    <h2 class="text-[11px] font-semibold uppercase tracking-[0.14em] text-base-content/50">
+      Transcrição #{{ selected.index }}
+    </h2>
+    <span class="flex-1 h-px bg-base-300"></span>
+  </div>
+
+  {% if selected.extra %}
+    <div class="flex flex-wrap gap-1.5 mb-3">
+      {% for key, value in selected.extra.items() %}
+        <span
+          class="inline-flex items-center gap-1 rounded-full border border-base-300 bg-base-100 px-2 py-0.5 text-[10px] text-base-content/70"
+          title="{{ value }}"
+        >
+          <span class="text-base-content/40">{{ key }}</span>{{ value | truncate(38) }}
+        </span>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="space-y-2" data-dialog-explorer-target="transcript">
+    {% for message in selected.messages %}
+      {% include "partials/bubble.html" %}
+    {% endfor %}
+  </div>
+{% endif %}

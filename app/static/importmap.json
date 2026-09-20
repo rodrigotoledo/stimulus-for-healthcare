@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "@hotwired/stimulus": "https://cdn.jsdelivr.net/npm/@hotwired/stimulus@3.2.2/dist/stimulus.js",
+    "controllers/dataset_browser_controller": "/static/js/controllers/dataset_browser_controller.js",
+    "controllers/dialog_explorer_controller": "/static/js/controllers/dialog_explorer_controller.js",
+    "controllers/analysis_stream_controller": "/static/js/controllers/analysis_stream_controller.js",
+    "controllers/status_controller": "/static/js/controllers/status_controller.js"
+  }
+}

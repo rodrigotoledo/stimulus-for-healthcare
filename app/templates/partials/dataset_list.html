@@ -1,0 +1,41 @@
+{% for dataset in datasets %}
+  <button
+    type="button"
+    class="w-full text-left rounded-lg border px-3 py-2.5 transition-colors {% if selected_id == dataset.id %}border-indigo-500 bg-indigo-500/10 ring-1 ring-indigo-500/40{% else %}border-base-300 bg-base-200 hover:border-base-content/40 hover:bg-base-300{% endif %}"
+    data-action="dataset-browser#select"
+    data-dataset-id="{{ dataset.id }}"
+    data-default-config="{{ dataset.default_config or '' }}"
+    data-default-split="{{ dataset.default_split or '' }}"
+    data-note="{{ dataset.note or '' }}"
+    data-curado="{{ 'true' if dataset.curado else 'false' }}"
+  >
+    <div class="text-[13px] font-semibold text-base-content break-all leading-snug">
+      {{ dataset.id }}
+    </div>
+    <div class="flex flex-wrap items-center gap-1.5 mt-2">
+      {% if dataset.curado %}
+        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium uppercase tracking-wide bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+          curado
+        </span>
+      {% endif %}
+      {% if dataset.restrito %}
+        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium uppercase tracking-wide bg-amber-500/15 text-amber-300 border border-amber-500/30">
+          restrito
+        </span>
+      {% endif %}
+      {% if dataset.downloads is not none %}
+        <span class="text-[10px] text-base-content/50">{{ "{:,}".format(dataset.downloads) }} ↓</span>
+      {% endif %}
+      {% if dataset.likes %}
+        <span class="text-[10px] text-base-content/50">♥ {{ dataset.likes }}</span>
+      {% endif %}
+    </div>
+    {% if dataset.note %}
+      <div class="text-[11px] text-base-content/50 mt-2 leading-snug">{{ dataset.note }}</div>
+    {% endif %}
+  </button>
+{% else %}
+  <p class="text-xs text-base-content/50 leading-relaxed">
+    Busque no Hub para encontrar conjuntos de dados, ou volte para a lista de curados.
+  </p>
+{% endfor %}

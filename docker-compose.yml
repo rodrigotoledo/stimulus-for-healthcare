@@ -1,0 +1,33 @@
+# Compose runs the app alone; Ollama is expected on the host by default so the
+# models you already pulled are reused.
+#
+#   docker compose up --build
+#   → http://localhost:8020
+#
+# Inside the container "localhost" is the container itself, so the Ollama URL
+# points at the host via host.docker.internal (see the extra_hosts entry).
+
+services:
+  app:
+    build: .
+    ports:
+      - "8020:8000"
+    environment:
+      HFD_OLLAMA_URL: ${HFD_OLLAMA_URL:-http://host.docker.internal:11434}
+      HFD_OLLAMA_DEFAULT_MODEL: ${HFD_OLLAMA_DEFAULT_MODEL:-MedGemma:4b}
+      HFD_HF_TOKEN: ${HFD_HF_TOKEN:-}
+      HFD_HF_TIMEOUT: ${HFD_HF_TIMEOUT:-30}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  # Uncomment to run Ollama in Docker too (then set HFD_OLLAMA_URL=http://ollama:11434).
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama-models:/root/.ollama
+
+# volumes:
+#   ollama-models:

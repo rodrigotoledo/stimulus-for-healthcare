@@ -1,0 +1,10 @@
+{% if health is none %}
+  <span class="h-2 w-2 rounded-full bg-rose-400"></span>
+  <span>servidor indisponível</span>
+{% elif health.ollama.reachable %}
+  <span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px] shadow-emerald-400/60"></span>
+  <span>{{ health.ollama.model_count }} modelos</span>
+{% else %}
+  <span class="h-2 w-2 rounded-full bg-rose-400"></span>
+  <span>Ollama offline</span>
+{% endif %}

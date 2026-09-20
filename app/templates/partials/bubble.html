@@ -1,0 +1,23 @@
+{# One transcript turn. Each role gets its own accent so a long dialogue can be
+   scanned quickly: indigo for the patient, emerald for the clinician, violet
+   for a model's reasoning trace. #}
+{% set accents = {
+  'user': ('border-l-indigo-400', 'text-indigo-300'),
+  'assistant': ('border-l-emerald-400', 'text-emerald-300'),
+  'reasoning': ('border-l-violet-400', 'text-violet-300'),
+  'system': ('border-l-base-content/40', 'text-base-content/70'),
+} %}
+{% set accent, label_colour = accents.get(message.role, ('border-l-base-content/30', 'text-base-content/70')) %}
+<div class="rounded-lg border border-base-300 border-l-[3px] {{ accent }} bg-base-200 px-3.5 py-2.5">
+  <div class="flex items-center gap-2 mb-1.5">
+    <span class="text-[10px] font-semibold uppercase tracking-wider {{ label_colour }}">
+      {{ role_labels.get(message.role, message.role) }}
+    </span>
+    {% if message.label %}
+      <span class="rounded border border-base-300 bg-base-100 px-1.5 py-px text-[10px] text-base-content/50 font-mono">
+        {{ message.label }}
+      </span>
+    {% endif %}
+  </div>
+  <p class="text-[13px] leading-relaxed text-base-content/90 whitespace-pre-wrap break-words m-0">{{ message.content }}</p>
+</div>

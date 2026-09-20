@@ -1,0 +1,38 @@
+/* Tailwind entry point. Compiled by the Tailwind CLI into app.css, which
+   layout.html loads — there is no CDN runtime in the served page.
+
+   Build:  npm run css      (or the `css` stage in the Dockerfile) */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- what neither Tailwind nor daisyUI expresses cleanly ----------------- */
+
+/* Keep each column independently scrollable so the page itself never becomes
+   one long scroll. Offset by the sticky header (h-14 = 3.5rem) and footer. */
+@media (min-width: 1024px) {
+  main > section {
+    height: calc(100vh - 3.5rem - 3.25rem);
+    overflow-y: auto;
+  }
+}
+
+/* Slim scrollbars so the three columns stay readable. */
+main > section::-webkit-scrollbar {
+  width: 10px;
+}
+
+main > section::-webkit-scrollbar-thumb {
+  background: rgb(37 46 99 / 0.8);
+  border-radius: 999px;
+}
+
+main > section::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* The streamed analysis must not reflow as tokens arrive. */
+.analysis-stream {
+  font-variant-ligatures: none;
+}

@@ -1,0 +1,9 @@
+{# Ollama / backend status badge, refreshed by the `status` Stimulus controller. #}
+<div
+  class="flex items-center gap-2 rounded-full border border-base-300 bg-base-100 px-3 py-1 text-[11px] text-base-content/70"
+  data-status-target="badge"
+  data-refresh-url="{{ url_for('health_fragment') }}"
+  data-interval="15000"
+>
+  {% include "partials/status_badge.html" %}
+</div>
